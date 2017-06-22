@@ -7,14 +7,14 @@ import rx.Subscription
 /**
  * Created by huha on 2017/6/19.
  */
-class DailyPresenterImpl(val dailyView: DailyView) : IDailyPresenter{
+class DailyPresenterImpl(val dailyView: DailyView) : IDailyPresenter {
     val mDailyModelImpl: DailyModelImpl = DailyModelImpl()
 
-    override fun requestDaily(year: String, month: String, day: String) {
-        val subscription: Subscription  = mDailyModelImpl.requestDailyContent(year, month, day).subscribe(
+    override fun requestDaily(year: String, month: String, day: String): Subscription{
+        val subscription: Subscription = mDailyModelImpl.requestDailyContent(year, month, day).subscribe(
                 {
                     result ->
-                    when(result.error){
+                    when (result.error) {
                         false ->
                             dailyView?.dailyRequestSuccess(result.results)
                         else ->
@@ -22,8 +22,9 @@ class DailyPresenterImpl(val dailyView: DailyView) : IDailyPresenter{
                     }
                 }, {
             error ->
-            dailyView?.dailyRequestFailed("失败原因："+ error.message)
+            dailyView?.dailyRequestFailed("失败原因：" + error.message)
         })
+        return subscription
     }
 
 }

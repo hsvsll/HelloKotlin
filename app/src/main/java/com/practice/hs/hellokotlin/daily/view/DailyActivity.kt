@@ -15,23 +15,26 @@ import com.practice.hs.hellokotlin.event.RequestDailyDataSuccessEvent
 import com.practice.hs.hellokotlin.loge
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import rx.Subscription
 import java.util.*
 
-class DailyActivity : BaseActivity(), DailyView{
+class DailyActivity : BaseActivity(), DailyView {
     var mIDailyPresenter: IDailyPresenter? = null
     var mAdapter: DailyMainAdapter? = null
     var mLinearLayoutDivider: LinearLayout? = null
-    var data:GankDailyContentResponse? = null
+    var data: GankDailyContentResponse? = null
+
+    val subList: ArrayList<Subscription> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         fab.setOnClickListener { view ->
-            var month: String = (Random().nextInt(8)+6).toString()
-            var day: String = (Random().nextInt(28)+ 1).toString()
-            loge("Time","time = ${month} - ${day}")
-            mIDailyPresenter?.requestDaily("2015",month,day)
+            val month: String = (Random().nextInt(8) + 6).toString()
+            val day: String = (Random().nextInt(28) + 1).toString()
+            loge("Time", "time = $month - $day")
+            subList?.add(mIDailyPresenter?.requestDaily("2015", month, day)!!)
         }
         mIDailyPresenter = DailyPresenterImpl(this)
 
@@ -45,22 +48,24 @@ class DailyActivity : BaseActivity(), DailyView{
         viewPageDaily.offscreenPageLimit = 3
         tabLayoutDaily.setupWithViewPager(viewPageDaily)
 
-        viewPageDaily.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+        viewPageDaily.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
+
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             }
+
             override fun onPageSelected(position: Int) {
                 sendData()
             }
         })
 
-        mIDailyPresenter?.requestDaily("2015","08","07")
+        subList?.add(mIDailyPresenter?.requestDaily("2015", "08", "07")!!)
 
     }
 
     override fun dailyRequestFailed(message: String) {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun dailyRequestSuccess(result: GankDailyContentResponse) {
@@ -68,13 +73,21 @@ class DailyActivity : BaseActivity(), DailyView{
         sendData()
     }
 
-    fun sendData(){
-        if(data != null){
-            AppClient.send(RequestDailyDataSuccessEvent(data,viewPageDaily.currentItem))
+    fun sendData() {
+        if (data != null) {
+            AppClient.send(RequestDailyDataSuccessEvent(data, viewPageDaily.currentItem))
         }
     }
 
-
+    override fun onDestroy() {
+        if (subList != null) {
+            for(item in subList!!)
+                if (!item.isUnsubscribed) {
+                    item.unsubscribe()
+                }
+        }
+        super.onDestroy()
+    }
 
 }
 

@@ -20,7 +20,8 @@ import java.util.*
 class DailyDetailAdapter(context: Context) :
         RecyclerView.Adapter<DailyDetailAdapter.ViewHolder>() {
     var data: ArrayList<GankDailyContentItemResponse>? = ArrayList()
-    companion object{
+
+    companion object {
         var pageType: Int? = null
         var mContext: Context? = null
     }
@@ -56,23 +57,25 @@ class DailyDetailAdapter(context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.bindForecast(data?.get(position))
-        }
+    }
 
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
         fun bindForecast(item: GankDailyContentItemResponse?) {
-            if (pageType == 3) {
-                view?.rlDailyItemContent?.visibility = View.GONE
-                view?.tvWelfare?.visibility = View.VISIBLE
-                Glide.with(mContext).load(item?.url).into(view?.tvWelfare)
-            } else {
-                view?.rlDailyItemContent?.visibility = View.VISIBLE
-                view?.tvWelfare?.visibility = View.GONE
-                view?.tvArticleType?.text = item?.type
-                view?.tvPublishedTime?.text = formatDateTime(item?.publishedAt as String, "yyyy-MM-dd")
-                view?.tvArticleDesc?.text = item?.desc
-                view?.tvArticleAddress?.text = item?.url
-                view?.rlDailyItemContent?.setOnClickListener {
-                    WebViewActivity().toActivityNavigation(mContext!!, item?.url)
+            with(view) {
+                if (pageType == 3) {
+                    view?.rlDailyItemContent?.visibility = View.GONE
+                    view?.tvWelfare?.visibility = View.VISIBLE
+                    Glide.with(mContext).load(item?.url).into(view?.tvWelfare)
+                } else {
+                    view?.rlDailyItemContent?.visibility = View.VISIBLE
+                    view?.tvWelfare?.visibility = View.GONE
+                    view?.tvArticleType?.text = item?.type
+                    view?.tvPublishedTime?.text = formatDateTime(item?.publishedAt as String, "yyyy-MM-dd")
+                    view?.tvArticleDesc?.text = item?.desc
+                    view?.tvArticleAddress?.text = "作者：${item?.who}"
+                    view?.rlDailyItemContent?.setOnClickListener {
+                        WebViewActivity().toActivityNavigation(mContext!!, item?.url)
+                    }
                 }
             }
         }

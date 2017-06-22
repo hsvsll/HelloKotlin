@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvArticleType"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:padding="5dp"
             android:text="向上滑动隐藏toolbar以及toolbar的title文字动画效果"
             android:textColor="@android:color/white" />
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvArticleDesc"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:padding="5dp"
             android:text="https://github.com/swissonid/android-design-support-lib-sample"
             android:textColor="@android:color/white" />
