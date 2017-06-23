@@ -17,30 +17,33 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import rx.Subscription
 import java.util.*
+import kotlin.properties.Delegates
 
 class DailyActivity : BaseActivity(), DailyView {
-    var mIDailyPresenter: IDailyPresenter? = null
-    var mAdapter: DailyMainAdapter? = null
-    var mLinearLayoutDivider: LinearLayout? = null
+    var mIDailyPresenter: IDailyPresenter by Delegates.notNull()
+    var mAdapter: DailyMainAdapter by Delegates.notNull()
+    var mLinearLayoutDivider: LinearLayout by Delegates.notNull()
     var data: GankDailyContentResponse? = null
 
-    val subList: ArrayList<Subscription> = ArrayList()
+    val subList: ArrayList<Subscription> by lazy {
+        ArrayList<Subscription>()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             val month: String = (Random().nextInt(8) + 6).toString()
             val day: String = (Random().nextInt(28) + 1).toString()
             loge("Time", "time = $month - $day")
-            subList?.add(mIDailyPresenter?.requestDaily("2015", month, day)!!)
+            subList.add(mIDailyPresenter.requestDaily("2015", month, day))
         }
         mIDailyPresenter = DailyPresenterImpl(this)
 
-        mLinearLayoutDivider = tabLayoutDaily.getChildAt(0) as LinearLayout?
-        mLinearLayoutDivider?.showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
-        mLinearLayoutDivider?.dividerDrawable = ContextCompat.getDrawable(this,
+        mLinearLayoutDivider = tabLayoutDaily.getChildAt(0) as LinearLayout
+        mLinearLayoutDivider.showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
+        mLinearLayoutDivider.dividerDrawable = ContextCompat.getDrawable(this,
                 R.drawable.tab_divider)
 
         mAdapter = DailyMainAdapter(supportFragmentManager)
@@ -60,7 +63,7 @@ class DailyActivity : BaseActivity(), DailyView {
             }
         })
 
-        subList?.add(mIDailyPresenter?.requestDaily("2015", "08", "07")!!)
+        subList.add(mIDailyPresenter.requestDaily("2015", "08", "07"))
 
     }
 
@@ -80,11 +83,10 @@ class DailyActivity : BaseActivity(), DailyView {
     }
 
     override fun onDestroy() {
-        if (subList != null) {
-            for(item in subList!!)
-                if (!item.isUnsubscribed) {
-                    item.unsubscribe()
-                }
+        subList.forEach {
+            if (!it.isUnsubscribed) {
+                it.unsubscribe()
+            }
         }
         super.onDestroy()
     }

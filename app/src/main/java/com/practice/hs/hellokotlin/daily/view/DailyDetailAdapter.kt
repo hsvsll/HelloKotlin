@@ -61,20 +61,20 @@ class DailyDetailAdapter(context: Context) :
 
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
         fun bindForecast(item: GankDailyContentItemResponse?) {
-            with(view) {
+            with(item!!) {
                 if (pageType == 3) {
                     view?.rlDailyItemContent?.visibility = View.GONE
                     view?.tvWelfare?.visibility = View.VISIBLE
-                    Glide.with(mContext).load(item?.url).into(view?.tvWelfare)
+                    Glide.with(mContext).load(url).into(view?.tvWelfare)
                 } else {
                     view?.rlDailyItemContent?.visibility = View.VISIBLE
                     view?.tvWelfare?.visibility = View.GONE
-                    view?.tvArticleType?.text = item?.type
-                    view?.tvPublishedTime?.text = formatDateTime(item?.publishedAt as String, "yyyy-MM-dd")
-                    view?.tvArticleDesc?.text = item?.desc
-                    view?.tvArticleAddress?.text = "作者：${item?.who}"
+                    view?.tvArticleType?.text = type
+                    view?.tvPublishedTime?.text = formatDateTime(publishedAt, "yyyy-MM-dd")
+                    view?.tvArticleDesc?.text = desc
+                    view?.tvArticleAddress?.text = "作者：$who"
                     view?.rlDailyItemContent?.setOnClickListener {
-                        WebViewActivity().toActivityNavigation(mContext!!, item?.url)
+                        WebViewActivity().toActivityNavigation(mContext!!, url)
                     }
                 }
             }

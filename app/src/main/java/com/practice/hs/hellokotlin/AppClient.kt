@@ -41,9 +41,13 @@ class  AppClient<T> {
                     .build()
         }
 
-        val appService: GankIoService = getAppService(GankIoService::class.java)
+        val appService: GankIoService by lazy {
+            getAppService(GankIoService::class.java)
+        }
 
-        val mRxBus: SerializedSubject<Any,Any> = SerializedSubject<Any,Any>(PublishSubject.create())
+        val mRxBus: SerializedSubject<Any,Any> by lazy {
+            SerializedSubject<Any,Any>(PublishSubject.create())
+        }
 
         fun <T> getAppService(service: Class<T>): T{
             return getRetrofit().create(service)

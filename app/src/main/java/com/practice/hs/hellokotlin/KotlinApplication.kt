@@ -1,6 +1,7 @@
 package com.practice.hs.hellokotlin
 
 import android.app.Application
+import kotlin.properties.Delegates
 
 /**
  * Created by huha on 2017/6/19.
