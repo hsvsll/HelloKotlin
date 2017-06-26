@@ -66,7 +66,9 @@ class DailyDetailAdapter(context: Context) :
                     view?.rlDailyItemContent?.visibility = View.GONE
                     view?.tvWelfare?.visibility = View.VISIBLE
                     Glide.with(mContext).load(url).into(view?.tvWelfare)
-                } else {
+                } else if(pageType == 4){
+
+                }else{
                     view?.rlDailyItemContent?.visibility = View.VISIBLE
                     view?.tvWelfare?.visibility = View.GONE
                     view?.tvArticleType?.text = type

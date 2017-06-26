@@ -12,9 +12,12 @@ import com.practice.hs.hellokotlin.bean.GankDailyContentResponse
  */
 
 class DailyMainAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-    val titleList = listOf("Android","IOS","瞎推荐","福利")
+    val titleList = listOf("Android", "IOS", "瞎推荐", "福利", "休息视频")
     override fun getItem(position: Int): Fragment? {
-        return DailyDetailAndroidFragment().newInstance(position)
+        if (position == 4)
+            return VideoFragment().newInstance(position)
+        else
+            return DailyDetailAndroidFragment().newInstance(position)
     }
 
     override fun getCount(): Int {
